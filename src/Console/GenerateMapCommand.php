@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -28,7 +29,10 @@ class GenerateMapCommand extends Command
         {--no-models : Exclude the model structure from the output.}
         {--no-routes : Exclude the routes list from the output.}
         {--no-deps : Exclude composer dependencies from the output.}
-        {--no-filament : Exclude the Filament structure from the output.}';
+        {--no-filament : Exclude the Filament structure from the output.}
+        {--no-env : Exclude environment details from the output.}
+        {--no-schedule : Exclude scheduled commands from the output.}
+        {--no-events : Exclude event listeners from the output.}';
 
     /**
      * The console command description.
@@ -49,6 +53,9 @@ class GenerateMapCommand extends Command
             'laravelVersion' => app()->version(),
         ];
 
+        if (!$this->option('no-env')) {
+            $projectMap['environment'] = $this->getEnvironmentDetails();
+        }
         if (!$this->option('no-db')) {
             $projectMap['databaseSchema'] = $this->getDatabaseSchema($isCompact);
         }
@@ -67,6 +74,12 @@ class GenerateMapCommand extends Command
         if (!$this->option('no-filament')) {
             $projectMap['filament'] = $this->getFilamentStructure($isCompact);
         }
+        if (!$this->option('no-schedule')) {
+            $projectMap['scheduledCommands'] = $this->getScheduledCommands();
+        }
+        if (!$this->option('no-events')) {
+            $projectMap['eventListeners'] = $this->getEventListeners();
+        }
 
         $outputFile = $this->option('output');
         File::put(base_path($outputFile), json_encode($projectMap, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
@@ -77,25 +90,57 @@ class GenerateMapCommand extends Command
 
     private function getDatabaseSchema(bool $compact = false): array
     {
-        $schema = [];
+        $connections = config('database.connections');
+        $defaultConnectionName = config('database.default');
+
+        // 1. First, try the default connection
+        $this->line("Attempting to connect to default database connection: <fg=yellow>{$defaultConnectionName}</>");
         try {
-            $tables = Schema::getAllTables();
-            foreach ($tables as $table) {
-                $tableName = current((array)$table);
-                if ($compact) {
-                    $schema[$tableName] = collect(Schema::getColumns($tableName))
-                        ->map(fn($col) => $col['name'] . ': ' . $col['type_name'] . ($col['nullable'] ? ' (nullable)' : ''))
-                        ->all();
-                } else {
-                    $schema[$tableName] = [
-                        'columns' => Schema::getColumns($tableName),
-                        'indexes' => Schema::getIndexes($tableName),
-                        'foreign_keys' => Schema::getForeignKeys($tableName),
-                    ];
-                }
-            }
+            DB::connection($defaultConnectionName)->getPdo();
+            $this->info("Successfully connected to '{$defaultConnectionName}'. Fetching schema...");
+            return $this->fetchSchemaForConnection($defaultConnectionName, $compact);
         } catch (Throwable $e) {
-            $this->warn('Could not get database schema: ' . $e->getMessage());
+            $this->warn("Connection '{$defaultConnectionName}' failed: " . Str::limit($e->getMessage(), 100));
+        }
+
+        // 2. If default failed, try all other connections
+        $this->line("\nDefault connection failed. Attempting other available connections...");
+        foreach (array_keys($connections) as $name) {
+            if ($name === $defaultConnectionName) continue;
+
+            $this->line("Attempting to connect to: <fg=yellow>{$name}</>");
+            try {
+                DB::connection($name)->getPdo();
+                $this->info("Successfully connected to '{$name}'. Fetching schema...");
+                return $this->fetchSchemaForConnection($name, $compact);
+            } catch (Throwable $e) {
+                $this->warn("Connection '{$name}' failed: " . Str::limit($e->getMessage(), 100));
+            }
+        }
+
+        $this->error("\nFailed to connect to any configured database. The database schema will be empty.");
+        return [];
+    }
+
+    private function fetchSchemaForConnection(string $connectionName, bool $compact): array
+    {
+        Schema::setConnection(DB::connection($connectionName));
+        
+        $schema = [];
+        $tables = Schema::getAllTables();
+        foreach ($tables as $table) {
+            $tableName = current((array)$table);
+            if ($compact) {
+                $schema[$tableName] = collect(Schema::getColumns($tableName))
+                    ->map(fn($col) => $col['name'] . ': ' . $col['type_name'] . ($col['nullable'] ? ' (nullable)' : ''))
+                    ->all();
+            } else {
+                $schema[$tableName] = [
+                    'columns' => Schema::getColumns($tableName),
+                    'indexes' => Schema::getIndexes($tableName),
+                    'foreign_keys' => Schema::getForeignKeys($tableName),
+                ];
+            }
         }
         return $schema;
     }
@@ -276,6 +321,61 @@ class GenerateMapCommand extends Command
         } catch (Throwable $e) {
             $this->warn('Could not analyze Filament structure: ' . $e->getMessage());
             return null;
+        }
+    }
+
+    private function getEnvironmentDetails(): array
+    {
+        return [
+            'environment' => config('app.env'),
+            'debug_mode' => config('app.debug'),
+            'timezone' => config('app.timezone'),
+            'locale' => config('app.locale'),
+            'cache_driver' => config('cache.default'),
+            'queue_connection' => config('queue.default'),
+            'session_driver' => config('session.driver'),
+            'mail_mailer' => config('mail.default'),
+        ];
+    }
+
+    private function getScheduledCommands(): array
+    {
+        $kernelPath = app_path('Console/Kernel.php');
+        if (!File::exists($kernelPath)) {
+            return [];
+        }
+
+        try {
+            $content = File::get($kernelPath);
+            preg_match_all('/\$schedule->command\((.*?)\)->(.*?);/s', $content, $matches);
+            
+            $scheduled = [];
+            foreach ($matches[0] as $match) {
+                $scheduled[] = trim(str_replace("\n", "", $match));
+            }
+            return $scheduled;
+        } catch (Throwable $e) {
+            $this->warn('Could not parse scheduled commands: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    private function getEventListeners(): array
+    {
+        $providerPath = app_path('Providers/EventServiceProvider.php');
+        if (!File::exists($providerPath)) {
+            return [];
+        }
+
+        try {
+            $provider = app(\App\Providers\EventServiceProvider::class);
+            $reflection = new ReflectionClass($provider);
+            $listenProperty = $reflection->getProperty('listen');
+            $listenProperty->setAccessible(true);
+            return $listenProperty->getValue($provider);
+        } catch (Throwable $e) {
+            $this->warn('Could not analyze event listeners: ' . $e->getMessage());
+            return [];
         }
     }
 }
