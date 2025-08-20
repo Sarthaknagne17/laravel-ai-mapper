@@ -122,30 +122,28 @@ class GenerateMapCommand extends Command
         return [];
     }
 
-    private function fetchSchemaForConnection(string $connectionName, bool $compact): array
-    {
-        $schemaBuilder = Schema::connection($connectionName);
-        
-        $schema = [];
-        $tables = $schemaBuilder->getAllTables();
+private function fetchSchemaForConnection(string $connectionName, bool $compact): array
+{
+    $schemaBuilder = Schema::connection($connectionName);
+    $schema = [];
 
-        foreach ($tables as $table) {
-            $tableName = current((array)$table);
-            if ($compact) {
-                $schema[$tableName] = collect($schemaBuilder->getColumns($tableName))
-                    ->map(fn($col) => $col['name'] . ': ' . $col['type_name'] . ($col['nullable'] ? ' (nullable)' : ''))
-                    ->all();
-            } else {
-                $schema[$tableName] = [
-                    'columns' => $schemaBuilder->getColumns($tableName),
-                    'indexes' => $schemaBuilder->getIndexes($tableName),
-                    'foreign_keys' => $schemaBuilder->getForeignKeys($tableName),
-                ];
-            }
+    $tableNames = $schemaBuilder->getTableListing();
+
+    foreach ($tableNames as $tableName) {
+        if ($compact) {
+            $schema[$tableName] = collect($schemaBuilder->getColumns($tableName))
+                ->map(fn($col) => $col['name'] . ': ' . $col['type_name'] . ($col['nullable'] ? ' (nullable)' : ''))
+                ->all();
+        } else {
+            $schema[$tableName] = [
+                'columns' => $schemaBuilder->getColumns($tableName),
+                'indexes' => $schemaBuilder->getIndexes($tableName),
+                'foreign_keys' => $schemaBuilder->getForeignKeys($tableName),
+            ];
         }
-        return $schema;
     }
-
+    return $schema;
+}
     
     private function getDirectoryStructure(): array
     {

@@ -1,12 +1,3 @@
-حتماً. با توجه به قابلیت‌های جدیدی که اضافه کردیم، باید فایل `README.md` را هم آپدیت کنیم تا کاربران از این امکانات جدید مطلع شوند.
-
-این هم نسخه به‌روز شده‌ی `README.md` به زبان انگلیسی که تمام ویژگی‌های جدید را شامل می‌شود.
-
------
-
-### README.md (Updated Version)
-
-````markdown
 # Laravel AI Mapper
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/araminco/laravel-ai-mapper.svg?style=flat-square)](https://packagist.org/packages/araminco/laravel-ai-mapper)
@@ -126,4 +117,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 📜 License
 
 This package is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-````
