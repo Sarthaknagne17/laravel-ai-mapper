@@ -124,26 +124,28 @@ class GenerateMapCommand extends Command
 
     private function fetchSchemaForConnection(string $connectionName, bool $compact): array
     {
-        Schema::setConnection(DB::connection($connectionName));
+        $schemaBuilder = Schema::connection($connectionName);
         
         $schema = [];
-        $tables = Schema::getAllTables();
+        $tables = $schemaBuilder->getAllTables();
+
         foreach ($tables as $table) {
             $tableName = current((array)$table);
             if ($compact) {
-                $schema[$tableName] = collect(Schema::getColumns($tableName))
+                $schema[$tableName] = collect($schemaBuilder->getColumns($tableName))
                     ->map(fn($col) => $col['name'] . ': ' . $col['type_name'] . ($col['nullable'] ? ' (nullable)' : ''))
                     ->all();
             } else {
                 $schema[$tableName] = [
-                    'columns' => Schema::getColumns($tableName),
-                    'indexes' => Schema::getIndexes($tableName),
-                    'foreign_keys' => Schema::getForeignKeys($tableName),
+                    'columns' => $schemaBuilder->getColumns($tableName),
+                    'indexes' => $schemaBuilder->getIndexes($tableName),
+                    'foreign_keys' => $schemaBuilder->getForeignKeys($tableName),
                 ];
             }
         }
         return $schema;
     }
+
     
     private function getDirectoryStructure(): array
     {
