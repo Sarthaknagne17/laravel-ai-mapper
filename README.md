@@ -26,6 +26,7 @@ This package extracts and maps the following information into a single JSON file
 
 You can install the package via Composer:
 
+
 ```bash
 composer require araminco/laravel-ai-mapper
 ```
