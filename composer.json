@@ -1,0 +1,31 @@
+{
+    "name": "araminco/laravel-ai-mapper",
+    "description": "A Laravel package to generate an AI-friendly map of the project structure, database, and dependencies.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aliasghar Ramin",
+            "email": "aa@aramin.co"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "illuminate/support": "^9.0|^10.0|^11.0",
+        "illuminate/console": "^9.0|^10.0|^11.0",
+        "illuminate/database": "^9.0|^10.0|^11.0",
+        "illuminate/routing": "^9.0|^10.0|^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Araminco\\AiMapper\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Araminco\\AiMapper\\AiMapperServiceProvider"
+            ]
+        }
+    }
+}
